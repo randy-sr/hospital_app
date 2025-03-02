@@ -1,0 +1,18 @@
+package com.hospital.model.enums;
+
+public enum Specialization {
+	CARDIOLOGY,
+    DERMATOLOGY,
+    ENDOCRINOLOGY,
+    GASTROENTEROLOGY,
+    NEUROLOGY,
+    OBSTETRICS,
+    ONCOLOGY,
+    OPHTHALMOLOGY,
+    ORTHOPEDICS,
+    PEDIATRICS,
+    PSYCHIATRY,
+    RADIOLOGY,
+    UROLOGY,
+    GENERAL_PRACTICE
+}
