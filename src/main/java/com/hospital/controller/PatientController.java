@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.hospital.dto.PatientDTO;
 import com.hospital.model.Patient;
 import com.hospital.service.DoctorService;
 import com.hospital.service.NurseService;
@@ -21,11 +22,11 @@ public class PatientController {
 	private final NurseService nurseService;
 	
 	@Autowired
-	public PatientController(PatientService patientService, DoctorService doctorService, NurseService nurseService) {
-		this.patientService = patientService;
+    public PatientController(PatientService patientService, DoctorService doctorService,NurseService nurseService ) {
+        this.patientService = patientService;
 		this.doctorService = doctorService;
 		this.nurseService = nurseService;
-	}
+    }
 	
 	@GetMapping
 	public List<Patient> getAllPatients() {
@@ -45,9 +46,9 @@ public class PatientController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
-		Patient savedPatient = patientService.savePatient(patient);
-		return ResponseEntity.status(HttpStatus.CREATED).body(savedPatient);
+	public ResponseEntity<PatientDTO> createPatient(@RequestBody PatientDTO patientDTO) {
+	    PatientDTO savedPatient = patientService.savePatient(patientDTO);
+	    return ResponseEntity.status(HttpStatus.CREATED).body(savedPatient);
 	}
 	
 	@PutMapping("/{id}")

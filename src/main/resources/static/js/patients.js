@@ -59,13 +59,14 @@ $(document).ready(function() {
 
         const method = patientId ? "PUT" : "POST";
         const url = patientId ? `/api/patients/${patientId}` : "/api/patients";
-
+		console.log(url)
         $.ajax({
             url: url,
             type: method,
             contentType: "application/json",
             data: JSON.stringify(patientData),
             success: function() {
+				console.log(patientData)
                 $("#patientModal").modal("hide");
                 showPatientsContent(); // Refrescar lista
                 updatePatientCount(); // Actualizar contador en dashboard
@@ -125,7 +126,6 @@ $(document).ready(function() {
     $("#saveAssignment").click(function() {
         const patientId = parseInt($("#assignPatientId").val());
         const staffType = $("#staffType").val();
-
         if (!staffType) {
             alert("Please select a staff type.");
             return;
@@ -296,13 +296,18 @@ function showPatientDetails(patientId) {
         const $details = $("#patient-details");
         $details.empty();
 
-		const assignedDoctors = (patient.doctors || []).length > 0
-			? patient.doctors.map(d => `${d.name} (${d.specialty || "N/A"})`).join(", ")
-			: "None";
-		const assignedNurses = (patient.nurses || []).length > 0
-			? patient.nurses.map(n => n.name).join(", ")
-			: "None";
-
+		const assignedDoctors = (patient.assignedEmployees  || [])
+								.filter(emp => emp.specialization)
+								.map(d => `${d.firstName} ${d.lastName} (${d.specialization || "N/A"})`)
+								.join(", ") || "None";
+		const assignedNurses = (patient.assignedEmployees  || [])
+								.filter(emp => !emp.specialization)
+								.map(n => `${n.firstName} ${n.lastName}`)
+								.join(", ") || "None";
+		
+		console.log("Doctor", assignedDoctors)						
+		console.log("Nurse", assignedNurses)	
+		
         const birthDate = new Date(patient.dateOfBirth);
         const today = new Date();
         let age = today.getFullYear() - birthDate.getFullYear();
@@ -314,7 +319,7 @@ function showPatientDetails(patientId) {
         $details.append(`
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>Patient Details: ${patient.name}</h5>
+                    <h5>Patient Details: ${patient.firstName + " " + patient.lastName}</h5>
                     <button class="btn btn-sm btn-secondary" id="closeDetails">
                         <i class="fas fa-times me-2"></i>Close
                     </button>
