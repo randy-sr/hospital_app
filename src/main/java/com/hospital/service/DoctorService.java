@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hospital.dto.DoctorDTO;
 import com.hospital.model.Doctor;
 import com.hospital.model.enums.Specialization;
 import com.hospital.repository.DoctorRepository;
@@ -17,6 +18,20 @@ public class DoctorService {
 	@Autowired
 	public DoctorService(DoctorRepository doctorRepository) {
 		this.doctorRepository = doctorRepository;
+	}
+	
+	public Doctor saveDoctor(DoctorDTO doctorDTO) {
+		Doctor doctor = new Doctor();
+		doctor.setFirstName(doctorDTO.getFirstName());
+		doctor.setLastName(doctorDTO.getLastName());
+		doctor.setPhoneNumber(doctorDTO.getPhoneNumber());
+		doctor.setEmail(doctorDTO.getEmail());
+		doctor.setSpecialization(doctorDTO.getSpecialization());
+		doctor.setLicenseNumber(doctorDTO.getLicenseNumber());
+		
+		Doctor savedDoctor = doctorRepository.save(doctor);
+	
+		return savedDoctor;
 	}
 	
 	public List<Doctor> findAllDoctors() {

@@ -59,14 +59,12 @@ $(document).ready(function() {
 
         const method = patientId ? "PUT" : "POST";
         const url = patientId ? `/api/patients/${patientId}` : "/api/patients";
-		console.log(url)
         $.ajax({
             url: url,
             type: method,
             contentType: "application/json",
             data: JSON.stringify(patientData),
             success: function() {
-				console.log(patientData)
                 $("#patientModal").modal("hide");
                 showPatientsContent(); // Refrescar lista
                 updatePatientCount(); // Actualizar contador en dashboard

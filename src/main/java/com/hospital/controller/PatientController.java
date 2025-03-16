@@ -52,13 +52,10 @@ public class PatientController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patient) {
-		return patientService.findPatientById(id)
-				.map(existingPatient -> {
-					patient.setId(id);
-					return ResponseEntity.ok(patientService.savePatient(patient));
-				})
-				.orElse(ResponseEntity.notFound().build());
+	public ResponseEntity<PatientDTO> updatePatient(@PathVariable Long id, @RequestBody PatientDTO patientDTO) {
+		patientDTO.setId(id);
+		PatientDTO updatePatient = patientService.savePatient(patientDTO);
+		return ResponseEntity.ok(updatePatient);
 	}
 	
 	@DeleteMapping("/{id}")

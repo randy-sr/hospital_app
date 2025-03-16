@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.hospital.dto.DoctorDTO;
 import com.hospital.model.Doctor;
 import com.hospital.model.enums.Specialization;
 import com.hospital.service.DoctorService;
@@ -46,18 +47,18 @@ public class DoctorController {
     }
 
     @PostMapping
-    public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
-        Doctor savedDoctor = doctorService.saveDoctor(doctor);
+    public ResponseEntity<Doctor> createDoctor(@RequestBody DoctorDTO doctorDTO) {
+        Doctor savedDoctor = doctorService.saveDoctor(doctorDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDoctor);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Doctor> updateDoctor(
-            @PathVariable Long id, @RequestBody Doctor doctor) {
+            @PathVariable Long id, @RequestBody DoctorDTO doctorDTO) {
         return doctorService.findDoctorById(id)
                 .map(existingDoctor -> {
-                    doctor.setId(id);
-                    return ResponseEntity.ok(doctorService.saveDoctor(doctor));
+                	doctorDTO.setId(id);
+                    return ResponseEntity.ok(doctorService.saveDoctor(doctorDTO));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }

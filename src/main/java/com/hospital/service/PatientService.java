@@ -27,31 +27,38 @@ public class PatientService {
 	}
 	
 	public PatientDTO savePatient(PatientDTO patientDTO) {
-        // Convertir DTO a Entidad
-        Patient patient = new Patient();
-        patient.setFirstName(patientDTO.getFirstName());
-        patient.setLastName(patientDTO.getLastName());
-        patient.setDateOfBirth(patientDTO.getDateOfBirth());
-        patient.setGender(patientDTO.getGender());
-        patient.setAddress(patientDTO.getAddress());
-        patient.setPhoneNumber(patientDTO.getPhoneNumber());
-        patient.setEmail(patientDTO.getEmail());
-        patient.setInsuranceDetails(patientDTO.getInsuranceDetails());
-
-        if (patientDTO.getAssignedEmployees() != null && !patientDTO.getAssignedEmployees().isEmpty()) {
-        	Set<Employee> employees = new HashSet<>();
-        	
-        	for (EmployeeDTO empDTO : patientDTO.getAssignedEmployees()) {
-        		doctorRepository.findById(empDTO.getId()).ifPresent(employees::add);
-        		nurseRepository.findById(empDTO.getId()).ifPresent(employees::add);
-        	}
-        	
-        	patient.setAssignedEmployees(employees);
-        }
-        
-        Patient savedPatient = patientRepository.save(patient);
-        
-		return convertToDTO(savedPatient);
+		Optional<Patient> existingPatientOpt = patientRepository.findById(patientDTO.getId());
+		
+		if(existingPatientOpt.isPresent()) {
+			Patient existingPatient = existingPatientOpt.get();
+			
+			existingPatient.setFirstName(patientDTO.getFirstName());
+			existingPatient.setLastName(patientDTO.getLastName());
+			existingPatient.setDateOfBirth(patientDTO.getDateOfBirth());
+			existingPatient.setGender(patientDTO.getGender());
+			existingPatient.setAddress(patientDTO.getAddress());
+			existingPatient.setPhoneNumber(patientDTO.getPhoneNumber());
+			existingPatient.setEmail(patientDTO.getEmail());
+			existingPatient.setInsuranceDetails(patientDTO.getInsuranceDetails());
+			
+			if (patientDTO.getAssignedEmployees() != null && !patientDTO.getAssignedEmployees().isEmpty()) {
+	        	Set<Employee> employees = new HashSet<>();
+	        	
+	        	for (EmployeeDTO empDTO : patientDTO.getAssignedEmployees()) {
+	        		doctorRepository.findById(empDTO.getId()).ifPresent(employees::add);
+	        		nurseRepository.findById(empDTO.getId()).ifPresent(employees::add);
+	        	}
+	        	
+	        	existingPatient.setAssignedEmployees(employees);
+	        }
+			
+		     Patient updatePatient = patientRepository.save(existingPatient);
+		     
+			return convertToDTO(updatePatient);
+		}else {
+	        throw new RuntimeException("El paciente con ID " + patientDTO.getId() + " no existe.");
+	    }
+           
     }
 	
 	private PatientDTO convertToDTO(Patient patient) {
