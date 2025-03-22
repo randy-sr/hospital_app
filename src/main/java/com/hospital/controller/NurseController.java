@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.hospital.dto.NurseDTO;
 import com.hospital.model.Nurse;
 import com.hospital.service.NurseService;
 
@@ -44,20 +45,17 @@ public class NurseController {
     }
 
     @PostMapping
-    public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
-        Nurse savedNurse = nurseService.saveNurse(nurse);
+    public ResponseEntity<Nurse> createNurse(@RequestBody NurseDTO nurseDTO) {
+        Nurse savedNurse = nurseService.saveNurse(nurseDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Nurse> updateNurse(
-            @PathVariable Long id, @RequestBody Nurse nurse) {
-        return nurseService.findNurseById(id)
-                .map(existingNurse -> {
-                    nurse.setId(id);
-                    return ResponseEntity.ok(nurseService.saveNurse(nurse));
-                })
-                .orElse(ResponseEntity.notFound().build());
+            @PathVariable Long id, @RequestBody NurseDTO nurseDTO) {
+    	nurseDTO.setId(id);
+    	Nurse updateNurse = nurseService.saveNurse(nurseDTO);
+    	return ResponseEntity.ok(updateNurse);
     }
     
     @DeleteMapping("/{id}")

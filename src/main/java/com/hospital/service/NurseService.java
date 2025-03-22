@@ -2,6 +2,8 @@ package com.hospital.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.hospital.dto.NurseDTO;
 import com.hospital.model.Nurse;
 import com.hospital.repository.NurseRepository;
 import java.util.List;
@@ -15,6 +17,25 @@ private final NurseRepository nurseRepository;
 	@Autowired
 	public NurseService(NurseRepository nurseRepository) {
 		this.nurseRepository = nurseRepository;
+	}
+	
+	public Nurse saveNurse(NurseDTO nurseDTO) {
+		Optional<Nurse> existingNurseOpt = nurseRepository.findById(nurseDTO.getId());
+		
+		if(existingNurseOpt.isPresent()) {
+			Nurse existingNurse = existingNurseOpt.get();
+			existingNurse.setFirstName(nurseDTO.getFirstName());
+			existingNurse.setLastName(nurseDTO.getLastName());
+			existingNurse.setPhoneNumber(nurseDTO.getPhoneNumber());
+			existingNurse.setEmail(nurseDTO.getEmail());
+			existingNurse.setEmail(nurseDTO.getDepartment());
+			existingNurse.setEmail(nurseDTO.getCertificationNumber());
+			Nurse savedNurse = nurseRepository.save(existingNurse);
+			
+			return savedNurse;
+		}else {
+	        throw new RuntimeException("El enfermero con ID " + nurseDTO.getId() + " no existe.");
+	    }
 	}
 	
 	public List<Nurse> findAllNurses() {
